@@ -1,0 +1,13 @@
+apiVersion: skaffold/v4beta5
+kind: Config
+metadata:
+  name: dotnet-monitor-k8s
+build:
+  local:
+    push: false
+#  artifacts:
+#    - context: src
+#      image: dotnet-monitor-k8s
+manifests:
+  rawYaml:
+    - kubernetes-manifests/**

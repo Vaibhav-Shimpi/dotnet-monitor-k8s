@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dotnet-monitor-k8s
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dotnet-monitor-k8s
+  template:
+    metadata:
+      labels:
+        app: dotnet-monitor-k8s
+      annotations:
+        dotnet-monitor.io/enable: 'true'
+        dotnet-monitor.io/port: '52323'
+    spec:
+      containers:
+      - name: server
+        image: dotnet-monitor-k8s
+        ports:
+        - containerPort: 8080
+        env:
+        - name: PORT
+          value: "8080"

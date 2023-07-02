@@ -1,0 +1,37 @@
+﻿apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dotnet-monitor-k8s
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dotnet-monitor-k8s
+  template:
+    metadata:
+      labels:
+        app: dotnet-monitor-k8s
+    spec:
+      volumes:
+      - name: diagnostics
+        emptyDir: {}
+      containers:
+      - name: app
+        image: mcr.microsoft.com/dotnet/samples:aspnetapp
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: COMPlus_EnableDiagnostics
+          value: "1"
+        ports:
+        - containerPort: 80
+        volumeMounts:
+          - mountPath: /tmp
+            name: diagnostics
+      - name: monitor
+        image: mcr.microsoft.com/dotnet/monitor:6-alpine
+        ports:
+        - containerPort: 52323
+        args: ["--urls", "http://*:52323", "--no-auth"]
+        volumeMounts:
+          - name: diagnostics
+            mountPath: /tmp

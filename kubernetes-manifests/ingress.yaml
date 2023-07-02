@@ -1,0 +1,20 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: dotnet-monitor-k8s-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  rules:
+  - host: k8s.dotnet-monitor.com #for local development, update the /etc/hosts 127.0.0.1 alias to it (for macos)
+    http:
+      paths:
+      - path: /(.*)
+        pathType: Prefix
+        backend:
+          service:
+            name: dotnet-monitor-k8s-external
+            port:
+              number: 80
